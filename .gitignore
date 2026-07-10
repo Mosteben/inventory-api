@@ -1,0 +1,10 @@
+/vendor/
+
+.env
+
+node_modules/
+
+.idea/
+.vscode/
+
+*.log

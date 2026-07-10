@@ -53,6 +53,10 @@ class InventoryTransactionService extends BaseService
                     $data['product_id'],
                     $data['quantity']
                 );
+                $user = AuthContext::user();
+
+$data['user_id'] = (int)$user['id'];
+$data['type'] = 'IN';
 
             $transaction =
                 InventoryTransactionFactory::create(
@@ -140,6 +144,10 @@ $this->activityLogService->log([
                     $data['product_id'],
                     $data['quantity']
                 );
+                $user = AuthContext::user();
+
+$data['user_id'] = (int)$user['id'];
+$data['type'] = 'OUT';
 
             $transaction =
                 InventoryTransactionFactory::create(
