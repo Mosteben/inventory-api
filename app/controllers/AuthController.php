@@ -71,6 +71,25 @@ class AuthController
                     true
                 );
 
+            if (!is_array($data)) {
+                $data = [];
+            }
+
+            if (
+                empty($data['email']) ||
+                empty($data['password'])
+            ) {
+
+                http_response_code(400);
+
+                echo json_encode([
+                    'message' =>
+                        'Email and password are required'
+                ]);
+
+                return;
+            }
+
             $result =
                 self::service()
                     ->login(

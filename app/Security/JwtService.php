@@ -2,14 +2,11 @@
 
 namespace App\Security;
 
+use App\Config\Env;
+use RuntimeException;
+
 class JwtService
 {
-    /**
-     * Secret Key
-     */
-    private const SECRET_KEY =
-        'InventoryAPI2026@Op';
-
     /**
      * Token Lifetime
      * 1 Hour
@@ -40,7 +37,7 @@ class JwtService
             JwtSignature::generate(
                 $header,
                 $encodedPayload,
-                self::SECRET_KEY
+                self::getSecret()
             );
 
         return
@@ -56,6 +53,14 @@ class JwtService
      */
     public static function getSecret(): string
     {
-        return self::SECRET_KEY;
+        $secret = Env::get('JWT_SECRET');
+
+        if (!$secret) {
+            throw new RuntimeException(
+                'JWT_SECRET is not configured.'
+            );
+        }
+
+        return $secret;
     }
 }

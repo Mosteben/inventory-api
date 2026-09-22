@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once "../vendor/autoload.php";
 
+use App\Config\Env;
 use App\Router\Router;
 
 use App\Controllers\AuthController;
@@ -25,6 +26,8 @@ use App\Controllers\SupplierController;
 use App\Controllers\OrderController;
 use App\Controllers\DashboardController;
 use App\Controllers\InventoryTransactionController;
+
+Env::load(__DIR__ . '/../.env');
 
 $router = new Router();
 

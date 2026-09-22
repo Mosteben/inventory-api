@@ -117,7 +117,7 @@ class UserRepository extends BaseRepository
             ':email'    => $data['email'],
             ':password' => $data['password'],
             ':phone'    => $data['phone'],
-            ':address'  => $data['address'],
+            ':address'  => $data['address'] ?? null,
             ':role'     => $data['role'],
             ':status'   => $data['status']
         ]);

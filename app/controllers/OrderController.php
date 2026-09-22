@@ -30,23 +30,35 @@ class OrderController
         int $id
     ): void
     {
-        $order =
-            self::service()
-                ->getById($id);
+        try {
 
-        if (!$order) {
+            $order =
+                self::service()
+                    ->getById($id);
 
-            http_response_code(404);
+            if (!$order) {
+
+                http_response_code(404);
+
+                echo json_encode([
+                    'message' =>
+                        'Order not found'
+                ]);
+
+                return;
+            }
+
+            echo json_encode($order);
+
+        } catch (Exception $e) {
+
+            http_response_code(403);
 
             echo json_encode([
                 'message' =>
-                    'Order not found'
+                    $e->getMessage()
             ]);
-
-            return;
         }
-
-        echo json_encode($order);
     }
 
     public static function store(): void
@@ -88,25 +100,31 @@ class OrderController
         int $id
     ): void
     {
-        $success =
+        try {
+
             self::service()
                 ->cancel($id);
 
-        if (!$success) {
-
-            http_response_code(404);
-
             echo json_encode([
                 'message' =>
-                    'Order not found'
+                    'Order cancelled successfully'
             ]);
 
-            return;
-        }
+        } catch (Exception $e) {
 
-        echo json_encode([
-            'message' =>
-                'Order cancelled successfully'
-        ]);
+            $message = $e->getMessage();
+
+            if ($message === 'Order not found') {
+                http_response_code(404);
+            } elseif ($message === 'Order is already cancelled') {
+                http_response_code(409);
+            } else {
+                http_response_code(400);
+            }
+
+            echo json_encode([
+                'message' => $message
+            ]);
+        }
     }
 }

@@ -39,7 +39,19 @@ class OrderService extends BaseService
 
     public function getById(int $id): ?Order
     {
-        return $this->orderRepository->getById($id);
+        $order = $this->orderRepository->getById($id);
+
+        if (
+            $order
+            && AuthContext::role() === 'customer'
+            && $order->getUserId() !== AuthContext::id()
+        ) {
+            throw new Exception(
+                'You are not allowed to view this order'
+            );
+        }
+
+        return $order;
     }
 
     public function create(array $data): array
@@ -158,6 +170,10 @@ $this->activityLogService->log([
 
             if (!$order) {
                 throw new Exception('Order not found');
+            }
+
+            if ($order->getStatus() === OrderStatus::CANCELLED) {
+                throw new Exception('Order is already cancelled');
             }
 
             $items = $this->orderRepository->getOrderItems($id);
